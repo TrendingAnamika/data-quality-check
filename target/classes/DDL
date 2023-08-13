@@ -1,0 +1,150 @@
+CREATE TABLE `dq_status_partn`(
+   `application_id` string,
+   `application_name` string,
+   `start_time` string,
+   `end_time` string,
+   `job_description` string,
+   `status` string,
+   `input_data_type` string,
+   `dataset_name` string)
+ PARTITIONED BY (
+   `currentdate` string)
+ ROW FORMAT SERDE
+   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+ STORED AS INPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+ OUTPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+ LOCATION
+   'test_d/dq_status_partn'
+ TBLPROPERTIES (
+   'parquet.compression'='SNAPPY',
+   'spark.sql.create.version'='2.2 or prior',
+   'spark.sql.sources.schema.numPartCols'='1',
+   'spark.sql.sources.schema.numParts'='1');
+
+
+
+ CREATE TABLE `dq_validation_result_partn`(
+   `constraint_rule` string,
+   `validation_rule` string,
+   `constraint_msg` string,
+   `resulting_status` string,
+   `total_rows` string,
+   `pass_count` string,
+   `fail_count` string,
+   `trend_key` string,
+   `trend_key_hash` string,
+   `rule_name` string,
+   `input_data` string,
+   `hive_inputtable` string,
+   `insert_timestamp` string,
+   `appid` string,
+   `dataset_name` string,
+   `column_list` string)
+ PARTITIONED BY (
+   `currentdate` string)
+ ROW FORMAT SERDE
+   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+ STORED AS INPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+ OUTPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+ LOCATION
+   'test_d/dq_validation_result_partn'
+ TBLPROPERTIES (
+   'parquet.compression'='SNAPPY',
+   'spark.sql.create.version'='2.2 or prior',
+   'spark.sql.sources.schema.numPartCols'='1',
+   'spark.sql.sources.schema.numParts'='1');
+
+
+
+ CREATE TABLE `dq_profiling_result_partn`(
+   `entity` string,
+   `column_name` string,
+   `metric_name` string,
+   `metric_abs_value` double,
+   `metric_ratio_value` double,
+   `dataset_name` string,
+   `insert_timestamp` string,
+   `appid` string,
+   `currentdate` string,
+   `indicator` map<string,string>)
+ PARTITIONED BY (
+   `appname` string,
+   `year_month` int)
+ ROW FORMAT SERDE
+   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+ STORED AS INPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+ OUTPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+ LOCATION
+   'test_d/dq_profiling_result_partn'
+ TBLPROPERTIES (
+   'parquet.compression'='SNAPPY',
+   'spark.sql.create.version'='2.2 or prior',
+   'spark.sql.sources.schema.numPartCols'='2',
+   'spark.sql.sources.schema.numParts'='1');
+
+
+ CREATE TABLE `historical_trend_result_partn`(
+   `column_name` string,
+   `metric_name` string,
+   `current_percentage` string,
+   `lower_threshold` double,
+   `upper_threshold` double,
+   `status` string,
+   `dataset_name` string,
+   `insert_timestamp` string,
+   `appid` string,
+   `currentdate` string,
+   `indicator` map<string,string>)
+ PARTITIONED BY (
+   `appname` string,
+   `year_month` int)
+ ROW FORMAT SERDE
+   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+ STORED AS INPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+ OUTPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+ LOCATION
+   'test_d/historical_trend_result_partn'
+ TBLPROPERTIES (
+   'parquet.compression'='SNAPPY',
+   'spark.sql.create.version'='2.2 or prior',
+   'spark.sql.sources.schema.numPartCols'='2',
+   'spark.sql.sources.schema.numParts'='1');
+
+
+ CREATE TABLE `stability_index_result_partn`(
+   `column_name` string,
+   `metric_name` string,
+   `current_percentage` string,
+   `avg_value` string,
+   `psi` double,
+   `status` string,
+   `dataset_name` string,
+   `insert_timestamp` string,
+   `appid` string,
+   `currentdate` string,
+   `indicator` map<string,string>)
+ PARTITIONED BY (
+   `appname` string,
+   `year_month` int)
+ ROW FORMAT SERDE
+   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+ STORED AS INPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+ OUTPUTFORMAT
+   'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+ LOCATION
+   'test_d/stability_index_result_partn'
+ TBLPROPERTIES (
+   'parquet.compression'='SNAPPY')
+
+---------------------------------------
+sh -x /data/.../Data_Quality_Framework/Common/scripts/dq_runner_2.03.sh -c /data/1/.../data/test_dq/test_dq_new.conf -e uat -m dq
+
